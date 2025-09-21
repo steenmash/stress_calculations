@@ -1,2 +1,1146 @@
-Первый строки
-  
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Центр прочностных расчётов</title>
+    <style>
+        :root {
+            --sidebar-width: 15%;
+            --ribbon-height: 12vh;
+            --accent-color: #4e7cff;
+            --canvas-height: 50vh;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+            background: #f4f6fb;
+            color: #1a1f36;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .ribbon {
+            position: sticky;
+            top: 0;
+            height: var(--ribbon-height);
+            min-height: 68px;
+            background: linear-gradient(135deg, #2c3e8f, #467bff);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.75rem;
+            box-shadow: 0 8px 24px rgba(26, 35, 90, 0.35);
+            z-index: 10;
+        }
+
+        .ribbon-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .ribbon-title {
+            font-size: 1.4rem;
+            letter-spacing: 0.01em;
+        }
+
+        .ribbon-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        .ribbon-center,
+        .ribbon-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ribbon-center label,
+        .ribbon-center output {
+            font-size: 0.85rem;
+        }
+
+        .ribbon input[type="range"] {
+            width: 160px;
+            accent-color: #ffe57f;
+        }
+
+        .history-box {
+            position: relative;
+        }
+
+        .history-button {
+            border: none;
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+            padding: 0.65rem 1.1rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .history-button:hover,
+        .history-button:focus {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
+        }
+
+        .history-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 0.5rem);
+            width: 320px;
+            max-height: 320px;
+            overflow-y: auto;
+            background: #fff;
+            color: #1a1f36;
+            border-radius: 12px;
+            box-shadow: 0 18px 32px rgba(27, 38, 73, 0.25);
+            padding: 0.85rem 1rem;
+            display: none;
+        }
+
+        .history-box:hover .history-dropdown,
+        .history-box:focus-within .history-dropdown {
+            display: block;
+        }
+
+        .history-dropdown h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .history-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .history-item {
+            background: #f6f8ff;
+            border-radius: 10px;
+            padding: 0.55rem 0.75rem;
+            border: 1px solid #d9e3ff;
+            line-height: 1.35;
+        }
+
+        .history-item strong {
+            display: block;
+            font-size: 0.92rem;
+            color: #2c3e8f;
+        }
+
+        .layout {
+            display: flex;
+            height: calc(100vh - var(--ribbon-height));
+            overflow: hidden;
+        }
+
+        aside {
+            width: var(--sidebar-width);
+            min-width: 180px;
+            background: #ffffff;
+            border-right: 1px solid #dfe6f5;
+            padding: 1.25rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-title {
+            font-size: 1.05rem;
+            color: #2c3e8f;
+        }
+
+        .component-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .component-item {
+            padding: 0.6rem 0.75rem;
+            border-radius: 10px;
+            background: #edf1ff;
+            color: #2c3e8f;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .component-item:hover,
+        .component-item:focus {
+            background: #dbe5ff;
+        }
+
+        .component-item.active {
+            background: linear-gradient(135deg, #4e7cff, #81a3ff);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(78, 124, 255, 0.3);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .canvas-wrapper {
+            position: sticky;
+            top: var(--ribbon-height);
+            height: var(--canvas-height);
+            min-height: 320px;
+            background: radial-gradient(circle at top, #ffffff 0%, #e9f0ff 60%, #d7e5ff 100%);
+            border-bottom: 1px solid #d9e3ff;
+            box-shadow: inset 0 -12px 24px rgba(50, 75, 131, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        #viewer {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .canvas-hint {
+            position: absolute;
+            bottom: 0.85rem;
+            right: 1.5rem;
+            background: rgba(30, 45, 90, 0.8);
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 0.45rem 0.75rem;
+            border-radius: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .calculations {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .calc-form {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #dce3f7;
+            padding: 1.5rem;
+            display: none;
+            box-shadow: 0 18px 28px rgba(40, 54, 109, 0.12);
+        }
+
+        .calc-form.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.1rem 1.5rem;
+            position: relative;
+        }
+
+        .calc-form h2 {
+            grid-column: 1 / -1;
+            font-size: 1.3rem;
+            margin-bottom: 0.4rem;
+            color: #2c3e8f;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: #4a5674;
+        }
+
+        input[type="number"] {
+            padding: 0.65rem 0.75rem;
+            border-radius: 10px;
+            border: 1px solid #c8d3f0;
+            font-size: 0.95rem;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(78, 124, 255, 0.18);
+            outline: none;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .calc-button {
+            background: linear-gradient(135deg, #4e7cff, #6b9cff);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 0.75rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 12px 22px rgba(78, 124, 255, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .calc-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 28px rgba(78, 124, 255, 0.3);
+        }
+
+        .result-box {
+            grid-column: 1 / -1;
+            background: #f4f8ff;
+            border-radius: 12px;
+            border: 1px solid #d4e2ff;
+            padding: 1rem 1.25rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #2f3b68;
+        }
+
+        .result-box strong {
+            color: #2c3e8f;
+        }
+
+        .note {
+            grid-column: 1 / -1;
+            font-size: 0.78rem;
+            color: #6a7597;
+            background: #fff7da;
+            border-radius: 10px;
+            padding: 0.55rem 0.75rem;
+            border: 1px solid #ffe8a3;
+        }
+
+        .calc-name {
+            font-size: 0.92rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .calc-name span {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 999px;
+            font-size: 0.85rem;
+            letter-spacing: 0.01em;
+        }
+
+        @media (max-width: 1200px) {
+            :root {
+                --canvas-height: 45vh;
+            }
+
+            .ribbon {
+                flex-wrap: wrap;
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+
+            .ribbon-left {
+                width: 100%;
+            }
+
+            .ribbon-center,
+            .ribbon-right {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .history-dropdown {
+                left: 0;
+                right: auto;
+            }
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow: auto;
+            }
+
+            .layout {
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - var(--ribbon-height));
+            }
+
+            aside {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .component-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .canvas-wrapper {
+                position: relative;
+                top: 0;
+                height: 320px;
+            }
+
+            main {
+                overflow: visible;
+            }
+
+            .calculations {
+                padding: 1rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="ribbon">
+        <div class="ribbon-left">
+            <div class="ribbon-title">Центр прочностных расчётов</div>
+            <div class="ribbon-subtitle">Интерактивная визуализация оборудования и быстрый инженерный анализ</div>
+            <div class="calc-name">Активный расчёт: <span id="currentComponentLabel">Обечайка</span></div>
+        </div>
+        <div class="ribbon-center">
+            <label for="sidebarWidth">Ширина панели элементов</label>
+            <input type="range" id="sidebarWidth" min="10" max="35" value="15" />
+            <output id="sidebarWidthValue">15%</output>
+        </div>
+        <div class="ribbon-right">
+            <div class="history-box">
+                <button class="history-button" type="button">Выполненные расчёты ▾</button>
+                <div class="history-dropdown" id="historyDropdown">
+                    <h3>История</h3>
+                    <ul class="history-list" id="historyList">
+                        <li class="history-item" id="historyEmpty">Список пока пуст.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="layout">
+        <aside>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Элементы аппарата</h2>
+            </div>
+            <ul class="component-list">
+                <li class="component-item active" data-component="shell" data-label="Обечайка">Обечайка</li>
+                <li class="component-item" data-component="head" data-label="Днище">Днище</li>
+                <li class="component-item" data-component="flange" data-label="Фланец">Фланец</li>
+            </ul>
+        </aside>
+        <main>
+            <section class="canvas-wrapper">
+                <canvas id="viewer"></canvas>
+                <div class="canvas-hint">Поворачивайте модель мышью, колесо — масштаб.</div>
+            </section>
+            <section class="calculations">
+                <form id="shellForm" class="calc-form active" data-component="shell">
+                    <h2>Расчёт толщины обечайки</h2>
+                    <div class="field">
+                        <label for="shellDiameter">Наружный диаметр обечайки, мм</label>
+                        <input type="number" id="shellDiameter" name="shellDiameter" value="1600" min="100" data-geom="diameter" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellLength">Длина обечайки, мм</label>
+                        <input type="number" id="shellLength" name="shellLength" value="3500" min="100" data-geom="length" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellThickness">Предварительная толщина, мм</label>
+                        <input type="number" id="shellThickness" name="shellThickness" value="18" min="2" step="0.1" data-geom="thickness" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellPressureInternal">Внутреннее давление, МПа</label>
+                        <input type="number" id="shellPressureInternal" name="shellPressureInternal" value="1.2" step="0.01" min="0" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellPressureExternal">Внешнее давление, МПа</label>
+                        <input type="number" id="shellPressureExternal" name="shellPressureExternal" value="0.05" step="0.01" min="0" />
+                    </div>
+                    <div class="field">
+                        <label for="shellAllowableStress">Допускаемое напряжение материала, МПа</label>
+                        <input type="number" id="shellAllowableStress" name="shellAllowableStress" value="160" min="10" step="1" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellJointEfficiency">Коэффициент прочности шва φ (0-1)</label>
+                        <input type="number" id="shellJointEfficiency" name="shellJointEfficiency" value="0.85" min="0.5" max="1" step="0.01" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellCorrosion">Коррозионный припуск, мм</label>
+                        <input type="number" id="shellCorrosion" name="shellCorrosion" value="1.5" min="0" step="0.1" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellModulus">Модуль упругости E, МПа</label>
+                        <input type="number" id="shellModulus" name="shellModulus" value="210000" min="10000" step="1000" required />
+                    </div>
+                    <div class="field">
+                        <label for="shellPoisson">Коэффициент Пуассона ν</label>
+                        <input type="number" id="shellPoisson" name="shellPoisson" value="0.3" min="0" max="0.49" step="0.01" required />
+                    </div>
+                    <div class="form-actions">
+                        <button class="calc-button" type="submit">Рассчитать толщину</button>
+                    </div>
+                    <div class="result-box" id="shellResult">
+                        Введите исходные данные и нажмите «Рассчитать толщину».
+                    </div>
+                    <div class="note">Используется классическая формула тонкостенной цилиндрической оболочки для внутреннего давления и приближённая оценка устойчивости при внешнем давлении.</div>
+                </form>
+
+                <form id="headForm" class="calc-form" data-component="head">
+                    <h2>Расчёт толщины днища</h2>
+                    <div class="field">
+                        <label for="headDiameter">Диаметр днища, мм</label>
+                        <input type="number" id="headDiameter" name="headDiameter" value="1600" min="300" data-geom="diameter" required />
+                    </div>
+                    <div class="field">
+                        <label for="headHeight">Высота выпуклой части, мм</label>
+                        <input type="number" id="headHeight" name="headHeight" value="400" min="50" data-geom="height" required />
+                    </div>
+                    <div class="field">
+                        <label for="headThickness">Предварительная толщина, мм</label>
+                        <input type="number" id="headThickness" name="headThickness" value="16" min="2" step="0.1" data-geom="thickness" required />
+                    </div>
+                    <div class="field">
+                        <label for="headPressureInternal">Внутреннее давление, МПа</label>
+                        <input type="number" id="headPressureInternal" name="headPressureInternal" value="1.2" step="0.01" min="0" required />
+                    </div>
+                    <div class="field">
+                        <label for="headPressureExternal">Внешнее давление, МПа</label>
+                        <input type="number" id="headPressureExternal" name="headPressureExternal" value="0.05" step="0.01" min="0" />
+                    </div>
+                    <div class="field">
+                        <label for="headAllowableStress">Допускаемое напряжение материала, МПа</label>
+                        <input type="number" id="headAllowableStress" name="headAllowableStress" value="160" min="10" step="1" required />
+                    </div>
+                    <div class="field">
+                        <label for="headJointEfficiency">Коэффициент прочности шва φ (0-1)</label>
+                        <input type="number" id="headJointEfficiency" name="headJointEfficiency" value="0.9" min="0.5" max="1" step="0.01" required />
+                    </div>
+                    <div class="field">
+                        <label for="headCorrosion">Коррозионный припуск, мм</label>
+                        <input type="number" id="headCorrosion" name="headCorrosion" value="1.5" min="0" step="0.1" required />
+                    </div>
+                    <div class="field">
+                        <label for="headModulus">Модуль упругости E, МПа</label>
+                        <input type="number" id="headModulus" name="headModulus" value="210000" min="10000" step="1000" required />
+                    </div>
+                    <div class="field">
+                        <label for="headPoisson">Коэффициент Пуассона ν</label>
+                        <input type="number" id="headPoisson" name="headPoisson" value="0.3" min="0" max="0.49" step="0.01" required />
+                    </div>
+                    <div class="form-actions">
+                        <button class="calc-button" type="submit">Рассчитать толщину</button>
+                    </div>
+                    <div class="result-box" id="headResult">
+                        Введите исходные данные и нажмите «Рассчитать толщину».
+                    </div>
+                    <div class="note">Применяется приближённая формула эллиптического днища для внутреннего давления и устойчивость сферической оболочки при внешнем давлении.</div>
+                </form>
+
+                <form id="flangeForm" class="calc-form" data-component="flange">
+                    <h2>Расчёт плоского фланца</h2>
+                    <div class="field">
+                        <label for="flangeOuterDiameter">Наружный диаметр фланца, мм</label>
+                        <input type="number" id="flangeOuterDiameter" name="flangeOuterDiameter" value="620" min="150" data-geom="outer" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangeInnerDiameter">Диаметр прохода, мм</label>
+                        <input type="number" id="flangeInnerDiameter" name="flangeInnerDiameter" value="520" min="50" data-geom="inner" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangeBoltCircle">Диаметр окружности болтов, мм</label>
+                        <input type="number" id="flangeBoltCircle" name="flangeBoltCircle" value="580" min="100" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangeGasketWidth">Ширина прокладки, мм</label>
+                        <input type="number" id="flangeGasketWidth" name="flangeGasketWidth" value="25" min="5" step="0.5" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangeThickness">Предварительная толщина, мм</label>
+                        <input type="number" id="flangeThickness" name="flangeThickness" value="40" min="5" step="0.5" data-geom="thickness" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangePressure">Давление среды, МПа</label>
+                        <input type="number" id="flangePressure" name="flangePressure" value="1.2" min="0" step="0.01" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangeBoltStress">Допускаемое напряжение болтов, МПа</label>
+                        <input type="number" id="flangeBoltStress" name="flangeBoltStress" value="190" min="10" step="1" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangeAllowableStress">Допускаемое напряжение фланца, МПа</label>
+                        <input type="number" id="flangeAllowableStress" name="flangeAllowableStress" value="120" min="10" step="1" required />
+                    </div>
+                    <div class="field">
+                        <label for="flangeBoltCount">Количество болтов</label>
+                        <input type="number" id="flangeBoltCount" name="flangeBoltCount" value="12" min="4" step="1" required />
+                    </div>
+                    <div class="form-actions">
+                        <button class="calc-button" type="submit">Рассчитать параметры</button>
+                    </div>
+                    <div class="result-box" id="flangeResult">
+                        Введите исходные данные и нажмите «Рассчитать параметры».
+                    </div>
+                    <div class="note">Методика приближённая: расчёт болтового усилия по давлению и оценка толщины по изгибу кольцевой плиты.</div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js" integrity="sha512-4s3KgwxM/HlFwvYdJ9koPcRc2nZT9U53dh8tkI6Ev6QK3oHTxz6fEziCxmwM//3ak3OHSjo68iPRfoFYPHY8tw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/examples/js/controls/OrbitControls.js" integrity="sha512-Veq9NILzUV9nYjDrS4PHOP9+AokC8Gd7hVpQBwNR9KW4QuZeciQxyyEJuvUanOxWY/HbDgyeuqlgSsmpT9v0WA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const sidebarWidthControl = document.getElementById("sidebarWidth");
+        const sidebarWidthValue = document.getElementById("sidebarWidthValue");
+        sidebarWidthControl.addEventListener("input", (event) => {
+            const value = event.target.value;
+            document.documentElement.style.setProperty("--sidebar-width", `${value}%`);
+            sidebarWidthValue.textContent = `${value}%`;
+        });
+
+        const componentItems = document.querySelectorAll(".component-item");
+        const forms = document.querySelectorAll(".calc-form");
+        const currentComponentLabel = document.getElementById("currentComponentLabel");
+        let currentComponent = "shell";
+
+        componentItems.forEach((item) => {
+            item.addEventListener("click", () => {
+                const component = item.dataset.component;
+                if (component === currentComponent) {
+                    return;
+                }
+                currentComponent = component;
+                componentItems.forEach((el) => el.classList.toggle("active", el === item));
+                forms.forEach((form) => {
+                    form.classList.toggle("active", form.dataset.component === component);
+                });
+                currentComponentLabel.textContent = item.dataset.label;
+                const activeForm = document.querySelector(`.calc-form[data-component="${component}"]`);
+                updateGeometryFromForm(activeForm);
+            });
+        });
+
+        const history = [];
+        const historyList = document.getElementById("historyList");
+        const historyEmpty = document.getElementById("historyEmpty");
+
+        function addToHistory(entry) {
+            history.unshift(entry);
+            if (history.length > 15) {
+                history.pop();
+            }
+            historyEmpty.style.display = history.length ? "none" : "block";
+            historyList.innerHTML = "";
+            if (!history.length) {
+                historyList.appendChild(historyEmpty);
+                return;
+            }
+            history.forEach((item) => {
+                const li = document.createElement("li");
+                li.className = "history-item";
+                li.innerHTML = `<strong>${item.title}</strong>${item.summary}<br><small>${item.timestamp}</small>`;
+                historyList.appendChild(li);
+            });
+        }
+
+        // THREE.js scene setup
+        const canvas = document.getElementById("viewer");
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf5f7fb);
+
+        const camera = new THREE.PerspectiveCamera(
+            45,
+            canvas.clientWidth / canvas.clientHeight,
+            0.1,
+            100
+        );
+        camera.position.set(2.4, 1.8, 2.4);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        function ensureRendererSize() {
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) {
+                return;
+            }
+            const needResize = canvas.width !== rect.width || canvas.height !== rect.height;
+            if (needResize) {
+                renderer.setSize(rect.width, rect.height, false);
+                camera.aspect = rect.width / rect.height;
+                camera.updateProjectionMatrix();
+            }
+        }
+
+        ensureRendererSize();
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.08;
+        controls.maxDistance = 10;
+        controls.minDistance = 0.3;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        directionalLight.position.set(5, 8, 6);
+        scene.add(directionalLight);
+
+        const backLight = new THREE.DirectionalLight(0xffffff, 0.35);
+        backLight.position.set(-4, -6, -5);
+        scene.add(backLight);
+
+        const gridHelper = new THREE.GridHelper(6, 12, 0x9db3ff, 0xd6dfff);
+        gridHelper.position.y = -1.2;
+        scene.add(gridHelper);
+
+        let currentMesh = null;
+
+        function clearCurrentMesh() {
+            if (!currentMesh) return;
+            currentMesh.traverse((child) => {
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) {
+                    if (Array.isArray(child.material)) {
+                        child.material.forEach((mat) => mat.dispose());
+                    } else {
+                        child.material.dispose();
+                    }
+                }
+            });
+            scene.remove(currentMesh);
+            currentMesh = null;
+        }
+
+        function buildShellModel({ diameter = 1200, length = 3000, thickness = 12 } = {}) {
+            const outerRadius = Math.max(diameter / 2000, 0.1);
+            const shellLength = Math.max(length / 1000, 0.3);
+            const wall = Math.max(thickness / 1000, 0.005);
+            const innerRadius = Math.max(outerRadius - wall, outerRadius * 0.2);
+
+            const group = new THREE.Group();
+
+            const outerGeometry = new THREE.CylinderGeometry(outerRadius, outerRadius, shellLength, 64, 1, true);
+            const innerGeometry = new THREE.CylinderGeometry(innerRadius, innerRadius, shellLength * 1.001, 64, 1, true);
+
+            const outerMaterial = new THREE.MeshStandardMaterial({
+                color: 0x5478ff,
+                transparent: true,
+                opacity: 0.75,
+                side: THREE.DoubleSide,
+                roughness: 0.35,
+                metalness: 0.1,
+            });
+
+            const innerMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.2,
+                side: THREE.BackSide,
+            });
+
+            const outerMesh = new THREE.Mesh(outerGeometry, outerMaterial);
+            const innerMesh = new THREE.Mesh(innerGeometry, innerMaterial);
+
+            outerMesh.rotation.x = Math.PI / 2;
+            innerMesh.rotation.x = Math.PI / 2;
+
+            group.add(outerMesh);
+            group.add(innerMesh);
+            group.position.y = shellLength / -4;
+            return group;
+        }
+
+        function buildHeadModel({ diameter = 1200, height = 300, thickness = 12 } = {}) {
+            const radius = Math.max(diameter / 2000, 0.1);
+            const wall = Math.max(thickness / 1000, 0.004);
+            const innerRadius = Math.max(radius - wall, radius * 0.2);
+            const heightScale = Math.max(height / (diameter / 2), 0.2);
+
+            const group = new THREE.Group();
+
+            const outerGeometry = new THREE.SphereGeometry(radius, 48, 48, 0, Math.PI * 2, 0, Math.PI / 2);
+            const innerGeometry = new THREE.SphereGeometry(innerRadius, 48, 48, 0, Math.PI * 2, 0, Math.PI / 2);
+
+            const outerMaterial = new THREE.MeshStandardMaterial({
+                color: 0xff7a66,
+                transparent: true,
+                opacity: 0.78,
+                side: THREE.DoubleSide,
+                roughness: 0.35,
+                metalness: 0.1,
+            });
+
+            const innerMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.18,
+                side: THREE.BackSide,
+            });
+
+            const outerMesh = new THREE.Mesh(outerGeometry, outerMaterial);
+            const innerMesh = new THREE.Mesh(innerGeometry, innerMaterial);
+
+            outerMesh.rotation.x = Math.PI;
+            innerMesh.rotation.x = Math.PI;
+
+            outerMesh.scale.y = heightScale;
+            innerMesh.scale.y = heightScale;
+
+            group.add(outerMesh);
+            group.add(innerMesh);
+            group.position.y = -0.8;
+            return group;
+        }
+
+        function buildFlangeModel({ outer = 600, inner = 500, thickness = 35 } = {}) {
+            const outerRadius = Math.max(outer / 2000, 0.2);
+            const innerRadius = Math.max(inner / 2000, 0.05);
+            const depth = Math.max(thickness / 1000, 0.01);
+
+            const shape = new THREE.Shape();
+            shape.absarc(0, 0, outerRadius, 0, Math.PI * 2, false);
+            const hole = new THREE.Path();
+            hole.absarc(0, 0, innerRadius, 0, Math.PI * 2, true);
+            shape.holes.push(hole);
+
+            const extrudeSettings = {
+                depth,
+                bevelEnabled: false,
+            };
+
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geometry.center();
+            geometry.rotateX(Math.PI / 2);
+
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x3fc4b5,
+                roughness: 0.32,
+                metalness: 0.2,
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.y = -0.5;
+            return mesh;
+        }
+
+        function updateGeometry(component, params = {}) {
+            clearCurrentMesh();
+            if (!component) return;
+            let mesh;
+            if (component === "shell") {
+                mesh = buildShellModel(params);
+            } else if (component === "head") {
+                mesh = buildHeadModel(params);
+            } else if (component === "flange") {
+                mesh = buildFlangeModel(params);
+            }
+            if (mesh) {
+                currentMesh = mesh;
+                scene.add(mesh);
+            }
+        }
+
+        function updateGeometryFromForm(form) {
+            if (!form) return;
+            const params = {};
+            form.querySelectorAll("[data-geom]").forEach((input) => {
+                const value = parseFloat(input.value);
+                if (!Number.isNaN(value)) {
+                    params[input.dataset.geom] = value;
+                }
+            });
+            updateGeometry(form.dataset.component, params);
+        }
+
+        forms.forEach((form) => {
+            form.querySelectorAll("[data-geom]").forEach((input) => {
+                input.addEventListener("input", () => updateGeometryFromForm(form));
+            });
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ensureRendererSize();
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener("resize", ensureRendererSize);
+
+        updateGeometryFromForm(document.getElementById("shellForm"));
+
+        function nowLabel() {
+            return new Date().toLocaleString();
+        }
+
+        function round(value, digits = 2) {
+            return Number.isFinite(value) ? Number.parseFloat(value).toFixed(digits) : "—";
+        }
+
+        function formatThickness(value) {
+            return Number.isFinite(value) ? `${round(value)} мм` : "не определяется";
+        }
+
+        function renderShellResult(result) {
+            const resultBox = document.getElementById("shellResult");
+            resultBox.innerHTML = `
+                <strong>Рекомендованная номинальная толщина: ${formatThickness(result.recommended)}</strong><br>
+                Толщина по внутреннему давлению: ${formatThickness(result.internal)}.<br>
+                Толщина по внешнему давлению: ${formatThickness(result.external)}.<br>
+                Управляющий случай: ${result.governing}.`;
+        }
+
+        function renderHeadResult(result) {
+            const resultBox = document.getElementById("headResult");
+            resultBox.innerHTML = `
+                <strong>Рекомендованная номинальная толщина: ${formatThickness(result.recommended)}</strong><br>
+                Толщина по внутреннему давлению: ${formatThickness(result.internal)}.<br>
+                Толщина по внешнему давлению: ${formatThickness(result.external)}.<br>
+                Управляющий случай: ${result.governing}.`;
+        }
+
+        function renderFlangeResult(result) {
+            const resultBox = document.getElementById("flangeResult");
+            resultBox.innerHTML = `
+                <strong>Рекомендуемая толщина фланца: ${round(result.thickness, 2)} мм</strong><br>
+                Требуемая суммарная площадь болтов: ${round(result.boltArea, 1)} мм².<br>
+                Площадь на один болт: ${round(result.boltAreaPerBolt, 1)} мм².<br>
+                Ориентировочный диаметр болта: ${round(result.boltDiameter, 1)} мм.`;
+        }
+
+        function calculateShell(form) {
+            const diameter = Number(form.shellDiameter.value);
+            const length = Number(form.shellLength.value);
+            const initialThickness = Number(form.shellThickness.value);
+            const pressureInternal = Math.max(Number(form.shellPressureInternal.value), 0);
+            const pressureExternal = Math.max(Number(form.shellPressureExternal.value), 0);
+            const allowableStress = Number(form.shellAllowableStress.value);
+            const jointEfficiency = Number(form.shellJointEfficiency.value);
+            const corrosion = Math.max(Number(form.shellCorrosion.value), 0);
+            const modulus = Number(form.shellModulus.value);
+            const poisson = Number(form.shellPoisson.value);
+
+            const radius = diameter / 2;
+            let internalThickness = null;
+            if (pressureInternal > 0) {
+                const denominator = allowableStress * jointEfficiency - 0.6 * pressureInternal;
+                if (denominator > 0) {
+                    internalThickness = (pressureInternal * radius) / denominator + corrosion;
+                }
+            }
+
+            let externalThickness = null;
+            if (pressureExternal > 0 && modulus > 0) {
+                const factor = (pressureExternal * Math.sqrt(3) * (1 - poisson ** 2)) / (2 * modulus);
+                if (factor > 0) {
+                    externalThickness = radius * Math.cbrt(factor) + corrosion;
+                }
+            }
+
+            const internalFinite = Number.isFinite(internalThickness) ? internalThickness : null;
+            const externalFinite = Number.isFinite(externalThickness) ? externalThickness : null;
+            const candidate = [internalFinite, externalFinite].filter((value) => value !== null);
+            const recommended = candidate.length ? Math.max(...candidate) : Math.max(corrosion, 0);
+            let governing = corrosion > 0 ? "коррозионный припуск" : "нет данных";
+            if (candidate.length) {
+                const same = internalFinite !== null && externalFinite !== null && Math.abs(internalFinite - externalFinite) < 1e-6;
+                if (same) {
+                    governing = "совмещённые нагрузки";
+                } else if (internalFinite !== null && recommended === internalFinite) {
+                    governing = "внутреннее давление";
+                } else if (externalFinite !== null && recommended === externalFinite) {
+                    governing = "внешнее давление";
+                }
+            }
+
+            renderShellResult({
+                recommended,
+                internal: internalFinite,
+                external: externalFinite,
+                governing,
+            });
+
+            addToHistory({
+                title: "Обечайка",
+                summary: ` t = ${round(recommended)} мм при D = ${diameter} мм, Pвн = ${pressureInternal} МПа`,
+                timestamp: nowLabel(),
+            });
+
+            const thicknessForModel = Number.isFinite(recommended) && recommended > 0 ? recommended : initialThickness;
+            updateGeometry("shell", { diameter, length, thickness: thicknessForModel });
+        }
+
+        function calculateHead(form) {
+            const diameter = Number(form.headDiameter.value);
+            const height = Number(form.headHeight.value);
+            const initialThickness = Number(form.headThickness.value);
+            const pressureInternal = Math.max(Number(form.headPressureInternal.value), 0);
+            const pressureExternal = Math.max(Number(form.headPressureExternal.value), 0);
+            const allowableStress = Number(form.headAllowableStress.value);
+            const jointEfficiency = Number(form.headJointEfficiency.value);
+            const corrosion = Math.max(Number(form.headCorrosion.value), 0);
+            const modulus = Number(form.headModulus.value);
+            const poisson = Number(form.headPoisson.value);
+
+            let internalThickness = null;
+            if (pressureInternal > 0) {
+                const denominator = 2 * allowableStress * jointEfficiency - 0.2 * pressureInternal;
+                if (denominator > 0) {
+                    internalThickness = (pressureInternal * diameter) / denominator + corrosion;
+                }
+            }
+
+            let externalThickness = null;
+            if (pressureExternal > 0 && modulus > 0) {
+                const radius = diameter / 2;
+                const factor = (pressureExternal * Math.sqrt(3) * (1 - poisson ** 2)) / (2 * modulus);
+                if (factor > 0) {
+                    externalThickness = radius * Math.sqrt(factor) + corrosion;
+                }
+            }
+
+            const internalFinite = Number.isFinite(internalThickness) ? internalThickness : null;
+            const externalFinite = Number.isFinite(externalThickness) ? externalThickness : null;
+            const candidate = [internalFinite, externalFinite].filter((value) => value !== null);
+            const recommended = candidate.length ? Math.max(...candidate) : Math.max(corrosion, 0);
+            let governing = corrosion > 0 ? "коррозионный припуск" : "нет данных";
+            if (candidate.length) {
+                const same = internalFinite !== null && externalFinite !== null && Math.abs(internalFinite - externalFinite) < 1e-6;
+                if (same) {
+                    governing = "совмещённые нагрузки";
+                } else if (internalFinite !== null && recommended === internalFinite) {
+                    governing = "внутреннее давление";
+                } else if (externalFinite !== null && recommended === externalFinite) {
+                    governing = "внешнее давление";
+                }
+            }
+
+            renderHeadResult({
+                recommended,
+                internal: internalFinite,
+                external: externalFinite,
+                governing,
+            });
+
+            addToHistory({
+                title: "Днище",
+                summary: ` t = ${round(recommended)} мм при D = ${diameter} мм, Pвн = ${pressureInternal} МПа`,
+                timestamp: nowLabel(),
+            });
+
+            const thicknessForModel = Number.isFinite(recommended) && recommended > 0 ? recommended : initialThickness;
+            updateGeometry("head", { diameter, height, thickness: thicknessForModel });
+        }
+
+        function calculateFlange(form) {
+            const outer = Number(form.flangeOuterDiameter.value);
+            const inner = Number(form.flangeInnerDiameter.value);
+            const boltCircle = Number(form.flangeBoltCircle.value);
+            const gasketWidth = Number(form.flangeGasketWidth.value);
+            const initialThickness = Number(form.flangeThickness.value);
+            const pressure = Math.max(Number(form.flangePressure.value), 0);
+            const boltStressAllowable = Number(form.flangeBoltStress.value);
+            const flangeStressAllowable = Number(form.flangeAllowableStress.value);
+            const boltCount = Number(form.flangeBoltCount.value);
+
+            const gasketDiameter = inner + 2 * gasketWidth;
+            const gasketArea = (Math.PI * gasketDiameter * gasketWidth) / 2;
+            const effectiveArea = Math.PI * Math.pow(inner, 2) / 4;
+            const boltLoad = pressure * effectiveArea;
+            const totalBoltArea = boltStressAllowable > 0 ? boltLoad / boltStressAllowable : 0;
+            const boltAreaPerBolt = boltCount > 0 ? totalBoltArea / boltCount : 0;
+            const boltDiameter = boltAreaPerBolt > 0 ? Math.sqrt((4 * boltAreaPerBolt) / Math.PI) : 0;
+
+            const leverArm = Math.max((boltCircle - gasketDiameter) / 2, gasketWidth / 2);
+            const moment = boltLoad * leverArm;
+            const faceWidth = Math.max((outer - inner) / 2, 1);
+            const requiredThickness = flangeStressAllowable > 0 ? Math.sqrt((6 * moment) / (flangeStressAllowable * faceWidth)) : initialThickness;
+            const recommendedThickness = Math.max(requiredThickness, initialThickness);
+
+            renderFlangeResult({
+                thickness: recommendedThickness,
+                boltArea: totalBoltArea,
+                boltAreaPerBolt,
+                boltDiameter,
+            });
+
+            addToHistory({
+                title: "Фланец",
+                summary: ` t = ${round(recommendedThickness)} мм, болт Ø ≈ ${round(boltDiameter, 1)} мм`,
+                timestamp: nowLabel(),
+            });
+
+            updateGeometry("flange", { outer, inner, thickness: recommendedThickness });
+        }
+
+        document.getElementById("shellForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            calculateShell(event.target);
+        });
+
+        document.getElementById("headForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            calculateHead(event.target);
+        });
+
+        document.getElementById("flangeForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            calculateFlange(event.target);
+        });
+    </script>
+</body>
+</html>
