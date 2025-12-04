@@ -1,0 +1,19 @@
+{
+  "name": "Gas Calorific Value",
+  "description": "Mixture calorific value and density using ISO-style weighted sums.",
+  "version": "1.0.0",
+  "inputs": [
+    {"id": "CH4", "label": "Methane (CH4)", "unit": "%", "type": "number", "default": 95},
+    {"id": "C2H6", "label": "Ethane (C2H6)", "unit": "%", "type": "number", "default": 3},
+    {"id": "C3H8", "label": "Propane (C3H8)", "unit": "%", "type": "number", "default": 1},
+    {"id": "N2", "label": "Nitrogen (N2)", "unit": "%", "type": "number", "default": 1},
+    {"id": "CO2", "label": "Carbon Dioxide (CO2)", "unit": "%", "type": "number", "default": 0}
+  ],
+  "outputs": [
+    {"id": "hv_m3", "label": "Higher Heating Value", "unit": "MJ/m³", "precision": 2},
+    {"id": "hv_kwh", "label": "Higher Heating Value", "unit": "kWh/m³", "precision": 2},
+    {"id": "density", "label": "Density", "unit": "kg/m³", "precision": 3},
+    {"id": "hv_mass", "label": "Higher Heating Value", "unit": "MJ/kg", "precision": 2}
+  ],
+  "formulas": ["volumetric", "density", "mass_basis"]
+}

@@ -1,0 +1,17 @@
+{
+  "velocity": {
+    "latex": "v = \frac{4Q}{\pi D^2}",
+    "display": true,
+    "description": "Axial velocity from volumetric flow."
+  },
+  "reynolds": {
+    "latex": "Re = \frac{\rho v D}{\mu}",
+    "display": true,
+    "description": "Reynolds number using density and viscosity." 
+  },
+  "pressure_drop": {
+    "latex": "\Delta P = \lambda \frac{L}{D} \frac{\rho v^2}{2}",
+    "display": true,
+    "description": "Darcy-Weisbach pressure drop expression."
+  }
+}

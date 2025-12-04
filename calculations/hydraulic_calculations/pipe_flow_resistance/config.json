@@ -1,0 +1,23 @@
+{
+  "name": "Pipe Flow Resistance",
+  "description": "Darcy-Weisbach pressure drop with Swamee-Jain friction factor.",
+  "version": "1.0.0",
+  "inputs": [
+    {"id": "flowRate", "label": "Volumetric Flow Rate (Q)", "unit": "m³/h", "type": "number", "default": 100, "min": 0.01, "max": 100000},
+    {"id": "diameter", "label": "Pipe Diameter (D)", "unit": "m", "type": "number", "default": 0.1, "min": 0.01, "max": 5},
+    {"id": "length", "label": "Pipe Length (L)", "unit": "m", "type": "number", "default": 100, "min": 0.1, "max": 5000},
+    {"id": "fluid", "label": "Fluid", "type": "select", "options": ["water", "air", "diesel"], "default": "water"},
+    {"id": "temperature", "label": "Temperature (T)", "unit": "°C", "type": "number", "default": 20, "min": -50, "max": 200},
+    {"id": "pressure", "label": "Pressure (for gases)", "unit": "kPa", "type": "number", "default": 101.3, "min": 10, "max": 2000},
+    {"id": "roughness", "label": "Relative Roughness (ε/D)", "type": "number", "default": 0.0001, "min": 0.000001, "max": 0.05}
+  ],
+  "outputs": [
+    {"id": "density", "label": "Density (ρ)", "unit": "kg/m³", "precision": 2},
+    {"id": "viscosity", "label": "Dynamic Viscosity (μ)", "unit": "Pa·s", "precision": 5},
+    {"id": "velocity", "label": "Velocity (v)", "unit": "m/s", "precision": 3},
+    {"id": "reynolds", "label": "Reynolds Number (Re)", "precision": 0},
+    {"id": "frictionFactor", "label": "Friction Factor (λ)", "precision": 4},
+    {"id": "pressureDrop", "label": "Pressure Drop (ΔP)", "unit": "Pa", "precision": 1}
+  ],
+  "formulas": ["velocity", "reynolds", "pressure_drop"]
+}
