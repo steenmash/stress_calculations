@@ -1,0 +1,36 @@
+{
+  "nodes": [
+    {
+      "id": "stress_calculations",
+      "name": "Stress Calculations",
+      "description": "Pressure vessel and head sizing per ASME/GOST guidance.",
+      "calculations": [
+        {"id": "wall_thickness_internal_pressure", "path": "calculations/stress_calculations/wall_thickness_internal_pressure"}
+      ]
+    },
+    {
+      "id": "hydraulic_calculations",
+      "name": "Hydraulic Calculations",
+      "description": "Flow hydraulics and pressure drop checks.",
+      "calculations": [
+        {"id": "pipe_flow_resistance", "path": "calculations/hydraulic_calculations/pipe_flow_resistance"}
+      ]
+    },
+    {
+      "id": "thermal_calculations",
+      "name": "Thermal Calculations",
+      "description": "Heat transfer and thermophysical properties.",
+      "calculations": [
+        {"id": "gas_calorific_value", "path": "calculations/thermal_calculations/gas_calorific_value"}
+      ]
+    },
+    {
+      "id": "technological_calculations",
+      "name": "Technological Calculations",
+      "description": "Process utility quick checks.",
+      "calculations": [
+        {"id": "velocity_in_pipelines", "path": "calculations/technological_calculations/velocity_in_pipelines"}
+      ]
+    }
+  ]
+}
