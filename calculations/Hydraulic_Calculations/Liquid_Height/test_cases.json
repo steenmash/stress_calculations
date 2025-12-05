@@ -1,0 +1,51 @@
+{
+  "test_cases": [
+    {
+      "name": "Baseline case",
+      "inputs": {
+        "flow_rate_m3_per_h": 50,
+        "hole_diameter_mm": 10,
+        "hole_count": 20,
+        "discharge_coefficient": 0.62
+      },
+      "expected_outputs": {
+        "velocity_m_per_s": 8.8419,
+        "liquid_height_mm": 10366.04
+      },
+      "tolerance": 0.5
+    },
+    {
+      "name": "Higher flow",
+      "inputs": {
+        "flow_rate_m3_per_h": 120,
+        "hole_diameter_mm": 8,
+        "hole_count": 24,
+        "discharge_coefficient": 0.65
+      },
+      "expected_outputs": {
+        "velocity_m_per_s": 27.6311,
+        "liquid_height_mm": 92102.11
+      },
+      "tolerance": 1.0
+    },
+    {
+      "name": "Error when missing field",
+      "inputs": {
+        "hole_diameter_mm": 8,
+        "hole_count": 10,
+        "discharge_coefficient": 0.6
+      },
+      "expected_error": "Missing required field"
+    },
+    {
+      "name": "Error when mu invalid",
+      "inputs": {
+        "flow_rate_m3_per_h": 30,
+        "hole_diameter_mm": 8,
+        "hole_count": 10,
+        "discharge_coefficient": 1.5
+      },
+      "expected_error": "Discharge coefficient must be between 0 and 1"
+    }
+  ]
+}

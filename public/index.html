@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineering Calculations</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Engineering Calculations</h1>
+    <button id="export-btn" disabled>Export PDF (stub)</button>
+  </header>
+  <div class="layout">
+    <aside id="sidebar">
+      <h2>Calculations</h2>
+      <div id="tree"></div>
+    </aside>
+    <main id="content">
+      <section class="column" id="inputs">
+        <h2>Inputs</h2>
+        <div id="input-form">Select a calculation from the left to begin.</div>
+      </section>
+      <section class="column" id="results">
+        <h2>Results</h2>
+        <pre id="results-content">No results yet.</pre>
+      </section>
+      <section class="column" id="preview">
+        <h2>Preview</h2>
+        <div id="formula-view">Formulas will appear here.</div>
+      </section>
+    </main>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

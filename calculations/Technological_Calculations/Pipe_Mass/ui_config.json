@@ -1,0 +1,16 @@
+{
+  "title": "Pipe Mass Calculation",
+  "description": "Calculates inner diameter and mass for cylindrical pipes using material density and geometric dimensions.",
+  "input_form": [
+    {"field": "outer_diameter", "label": "Outer Diameter (Do)", "type": "number", "unit": "mm", "placeholder": "273"},
+    {"field": "wall_thickness", "label": "Wall Thickness (t)", "type": "number", "unit": "mm", "placeholder": "10"},
+    {"field": "length", "label": "Length per Pipe (L)", "type": "number", "unit": "m", "placeholder": "6"},
+    {"field": "quantity", "label": "Number of Pipes (n)", "type": "number", "unit": "pcs", "placeholder": "100"},
+    {"field": "material", "label": "Material", "type": "select", "options": ["Carbon Steel", "Stainless Steel", "Brass", "Bronze"], "default": "Carbon Steel"}
+  ],
+  "result_format": [
+    {"field": "inner_diameter_mm", "label": "Inner Diameter (Di)", "unit": "mm", "decimals": 3},
+    {"field": "mass_per_meter_kg_per_m", "label": "Mass per Meter", "unit": "kg/m", "decimals": 3},
+    {"field": "total_mass_kg", "label": "Total Mass", "unit": "kg", "decimals": 3}
+  ]
+}

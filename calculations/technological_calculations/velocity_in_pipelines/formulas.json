@@ -1,7 +1,0 @@
-{
-  "velocity": {
-    "latex": "v = \frac{4Q}{\pi D^2}",
-    "display": true,
-    "description": "Velocity for each standard diameter based on volumetric flow Q (m³/s)."
-  }
-}
