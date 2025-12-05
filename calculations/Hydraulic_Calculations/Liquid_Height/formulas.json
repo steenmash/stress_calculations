@@ -1,0 +1,30 @@
+{
+  "discharge_area": {
+    "latex": "A = n \\cdot \\frac{\\pi d^2}{4}",
+    "description": "Total flow area of all distributor holes",
+    "variables": {
+      "A": "Total area, m^2",
+      "n": "Number of holes",
+      "d": "Hole diameter, m"
+    }
+  },
+  "velocity": {
+    "latex": "v = \\frac{Q}{A}",
+    "description": "Mean velocity through distributor holes",
+    "variables": {
+      "v": "Velocity, m/s",
+      "Q": "Volumetric flow rate, m^3/s",
+      "A": "Total area, m^2"
+    }
+  },
+  "liquid_height": {
+    "latex": "h = \\frac{1}{2g}\\left(\\frac{v}{\\mu}\\right)^2",
+    "description": "Height of liquid above the distributor plate",
+    "variables": {
+      "h": "Head, m",
+      "v": "Velocity, m/s",
+      "g": "Gravity, m/s^2",
+      "\\mu": "Discharge coefficient"
+    }
+  }
+}

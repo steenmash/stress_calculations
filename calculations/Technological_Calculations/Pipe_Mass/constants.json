@@ -1,0 +1,11 @@
+{
+  "materials": {
+    "Carbon Steel": {"density_kg_per_m3": 7850},
+    "Stainless Steel": {"density_kg_per_m3": 7900},
+    "Brass": {"density_kg_per_m3": 8440},
+    "Bronze": {"density_kg_per_m3": 7500}
+  },
+  "constants": {
+    "pi": 3.141592653589793
+  }
+}

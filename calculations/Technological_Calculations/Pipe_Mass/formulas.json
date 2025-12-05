@@ -1,0 +1,39 @@
+{
+  "inner_diameter": {
+    "latex": "D_i = D_o - 2t",
+    "description": "Inner diameter calculation",
+    "variables": {
+      "D_i": "Inner diameter, mm",
+      "D_o": "Outer diameter, mm",
+      "t": "Wall thickness, mm"
+    }
+  },
+  "cross_section_area": {
+    "latex": "A = \\frac{\\pi}{4}(D_o^2 - D_i^2)",
+    "description": "Cross-sectional area of pipe wall",
+    "variables": {
+      "A": "Cross-sectional area, m^2",
+      "D_o": "Outer diameter, m",
+      "D_i": "Inner diameter, m"
+    }
+  },
+  "mass_per_meter": {
+    "latex": "m = A \rho",
+    "description": "Mass per unit length",
+    "variables": {
+      "m": "Mass per meter, kg/m",
+      "A": "Cross-sectional area, m^2",
+      "\\rho": "Density, kg/m^3"
+    }
+  },
+  "total_mass": {
+    "latex": "M = m L n",
+    "description": "Total mass of the pipe batch",
+    "variables": {
+      "M": "Total mass, kg",
+      "m": "Mass per meter, kg/m",
+      "L": "Length of one pipe, m",
+      "n": "Number of pipes"
+    }
+  }
+}

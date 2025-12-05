@@ -1,0 +1,73 @@
+{
+  "test_cases": [
+    {
+      "name": "Standard carbon steel pipe",
+      "inputs": {
+        "outer_diameter": 273,
+        "wall_thickness": 10,
+        "length": 6,
+        "quantity": 100,
+        "material": "Carbon Steel"
+      },
+      "expected_outputs": {
+        "inner_diameter_mm": 253.0,
+        "mass_per_meter_kg_per_m": 64.86,
+        "total_mass_kg": 38915.851
+      },
+      "tolerance": 0.1
+    },
+    {
+      "name": "Stainless steel moderate size",
+      "inputs": {
+        "outer_diameter": 159,
+        "wall_thickness": 6,
+        "length": 3,
+        "quantity": 50,
+        "material": "Stainless Steel"
+      },
+      "expected_outputs": {
+        "inner_diameter_mm": 147.0,
+        "mass_per_meter_kg_per_m": 22.783,
+        "total_mass_kg": 3417.519
+      },
+      "tolerance": 0.1
+    },
+    {
+      "name": "Edge case minimum size",
+      "inputs": {
+        "outer_diameter": 20,
+        "wall_thickness": 2,
+        "length": 1,
+        "quantity": 1,
+        "material": "Bronze"
+      },
+      "expected_outputs": {
+        "inner_diameter_mm": 16,
+        "mass_per_meter_kg_per_m": 0.838,
+        "total_mass_kg": 0.838
+      },
+      "tolerance": 0.02
+    },
+    {
+      "name": "Error when wall too thick",
+      "inputs": {
+        "outer_diameter": 100,
+        "wall_thickness": 60,
+        "length": 1,
+        "quantity": 1,
+        "material": "Carbon Steel"
+      },
+      "expected_error": "Wall thickness must be less than half of the outer diameter"
+    },
+    {
+      "name": "Error when material missing",
+      "inputs": {
+        "outer_diameter": 100,
+        "wall_thickness": 10,
+        "length": 1,
+        "quantity": 1
+      },
+      "expected_error": "Missing required field"
+    }
+  ]
+}

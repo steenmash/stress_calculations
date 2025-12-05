@@ -1,0 +1,15 @@
+{
+  "title": "Liquid Height Above Distributor Plate",
+  "description": "Calculates velocity and hydraulic head for perforated distributor plates.",
+  "input_form": [
+    {"field": "flow_rate_m3_per_h", "label": "Flow Rate", "type": "number", "unit": "m^3/h", "placeholder": "50"},
+    {"field": "hole_diameter_mm", "label": "Hole Diameter", "type": "number", "unit": "mm", "placeholder": "10"},
+    {"field": "hole_count", "label": "Number of Holes", "type": "number", "unit": "pcs", "placeholder": "20"},
+    {"field": "discharge_coefficient", "label": "Discharge Coefficient (μ)", "type": "number", "unit": "-", "placeholder": "0.62"}
+  ],
+  "result_format": [
+    {"field": "velocity_m_per_s", "label": "Velocity", "unit": "m/s", "decimals": 4},
+    {"field": "liquid_height_m", "label": "Liquid Height", "unit": "m", "decimals": 4},
+    {"field": "liquid_height_mm", "label": "Liquid Height", "unit": "mm", "decimals": 2}
+  ]
+}
